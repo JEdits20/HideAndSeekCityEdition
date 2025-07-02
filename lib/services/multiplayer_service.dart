@@ -1,14 +1,14 @@
 import 'dart:convert';
-import 'dart:ffi';
-import 'package:encrypt/encrypt.dart' as encrypt;
+
+import 'package:hide_and_seek_city_edition/crypto.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../result.dart';
+
 class ApiService {
-  bool gameOngoing = false;
   final String baseUrl;
-  late Int code;
-  late Int uuid;
+  GameCrypto? crypto;
   String gameKey = 'hllhmnuklahmuklagvrhmuklsrgvloac';
 
   late final WebSocketChannel channel;
@@ -19,17 +19,21 @@ class ApiService {
     channel = WebSocketChannel.connect(Uri.parse(wsUrl));
   }
 
-  Future<String> newLobby(String gameName, ) async {
-
+  Future<Result<void>> newLobby(
+    String gameName,
+    String encryptedValidationData,
+  ) async {
+    // TODO: http endpoint to create new lobby
   }
 
   Future<void> setName(String name) async {
-    sendData({
-      'name': name
-    }, "create");
+    sendData({'name': name}, "create");
   }
 
-  Future<Map<String, dynamic>> sendData(Map<String, dynamic> data, String endpoint) async {
+  Future<Map<String, dynamic>> sendData(
+    Map<String, dynamic> data,
+    String endpoint,
+  ) async {
     int maxRetries = 3;
     http.Response? response;
 
@@ -48,29 +52,14 @@ class ApiService {
         }
       } catch (e) {
         print('Error occurred while sending data: $e');
-      }finally{
+      } finally {
         if (attempt < maxRetries - 1) {
           await Future.delayed(Duration(seconds: 2));
         }
       }
     }
-    if(response == null) return {'status': "error trying to reach the server"};
-    if(response.body.isEmpty) return {'status': response.statusCode};
+    if (response == null) return {'status': "error trying to reach the server"};
+    if (response.body.isEmpty) return {'status': response.statusCode};
     return jsonDecode(response.body);
   }
-
-  Future<bool> sendDataEncrypted(Map<String, double> data, String endpoint) async {
-    if(!gameOngoing) return false;
-    final encryptedValues = encrypt(data.values.toList(growable: false));
-
-    final payload = {
-      'values': encryptedValues,
-      'code': code,
-      'uuid': uuid,
-    };
-
-    sendData(payload, endpoint);
-    return true;
-  }
-
 }
