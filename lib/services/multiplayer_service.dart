@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ApiService {
   bool gameOngoing = false;
@@ -10,7 +11,17 @@ class ApiService {
   late Int uuid;
   String gameKey = 'hllhmnuklahmuklagvrhmuklsrgvloac';
 
-  ApiService(this.baseUrl);
+  late final WebSocketChannel channel;
+
+  ApiService(this.baseUrl, String ip, port) {
+    // substitute your server's IP and port
+    final wsUrl = 'ws://$ip:$port';
+    channel = WebSocketChannel.connect(Uri.parse(wsUrl));
+  }
+
+  Future<String> newLobby(String gameName, ) async {
+
+  }
 
   Future<void> setName(String name) async {
     sendData({
@@ -50,7 +61,7 @@ class ApiService {
 
   Future<bool> sendDataEncrypted(Map<String, double> data, String endpoint) async {
     if(!gameOngoing) return false;
-    final encryptedValues = _encryptValues(data.values.toList(growable: false));
+    final encryptedValues = encrypt(data.values.toList(growable: false));
 
     final payload = {
       'values': encryptedValues,
@@ -59,18 +70,7 @@ class ApiService {
     };
 
     sendData(payload, endpoint);
-    return true
+    return true;
   }
 
-  List<String> _encryptValues(List<double> values) {
-    final key = encrypt.Key.fromUtf8(gameKey.padRight(32, '0').substring(0, 32));
-    final iv = encrypt.IV.fromLength(16);
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-
-    List<String> encryptedValues = values.map((value) {
-      return encrypter.encrypt(value.toString(), iv: iv).base64;
-    }).toList();
-
-    return encryptedValues;
-  }
 }
