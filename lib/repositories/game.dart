@@ -1,5 +1,3 @@
-// lib/game_model.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:math';
