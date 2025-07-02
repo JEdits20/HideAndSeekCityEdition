@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'dart:math';
+
+import 'package:http/http.dart' as http;
 
 class GameModel {
   final String baseUrl;
@@ -10,7 +11,7 @@ class GameModel {
   String? _gameName;
   String? _gamePassword;
   int? _pingInterval; // x: ping interval in minutes
-  int? _sendWindow;   // y: send window in seconds
+  int? _sendWindow; // y: send window in seconds
 
   GameModel(this.baseUrl);
 
@@ -34,9 +35,7 @@ class GameModel {
 
     final response = await http.post(
       Uri.parse('$baseUrl/start'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
       body: jsonEncode(<String, dynamic>{
         'timestamp': timestamp,
         'x': pingInterval,
@@ -56,24 +55,24 @@ class GameModel {
 
   // Getters for relevant variables
   DateTime? get gameStartTime => _gameStartTime;
+
   List<String> get expectedUpdates => _expectedUpdates;
+
   List<Map<String, dynamic>> get latLngUpdates => _latLngUpdates;
+
   String? get gameName => _gameName;
+
   String? get gamePassword => _gamePassword;
+
   int? get pingInterval => _pingInterval; // Getter for ping interval
-  int? get sendWindow => _sendWindow;     // Getter for send window
+  int? get sendWindow => _sendWindow; // Getter for send window
 
   // Other methods for sending location updates and fetching updates
   Future<void> sendLocationUpdate(double lat, double lng) async {
     final response = await http.post(
       Uri.parse('$baseUrl/update'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'lat': lat,
-        'lng': lng,
-      }),
+      headers: <String, String>{'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode(<String, dynamic>{'lat': lat, 'lng': lng}),
     );
 
     if (response.statusCode == 200) {

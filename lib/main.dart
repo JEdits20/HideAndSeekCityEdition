@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'game/menu.dart';
 
 void main() {
@@ -10,9 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'OpenStreetMap Example',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: MapScreen(), // Set MapScreen as the home widget
     );
   }

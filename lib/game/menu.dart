@@ -40,69 +40,59 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('OpenStreetMap Example')),
       body: Column(
-          children: [
-      Expanded(
-      child: FlutterMap(
-        options: MapOptions(
-          initialCenter: _centerPoint, // Set your initial position
-          initialZoom: 14.0,
-          initialRotation: 0.0,
-          interactionOptions: InteractionOptions(
-              rotationThreshold: 0,
-            rotationWinGestures: InteractiveFlag.none
-          ),
-          onPositionChanged: (position, hasGesture) {
-            // Update the center point when the map is moved
-            setState(() {
-              _centerPoint = position.center; // Update the center point
-            });
-          },
-        ),
         children: [
-          TileLayer(
-            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-          ),
-          if (_currentLocation != null) // Show current location marker if available
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point: _currentLocation!,
-                  child: Icon(Icons.location_on, color: Colors.red, size: 40),
+          Expanded(
+            child: FlutterMap(
+              options: MapOptions(
+                initialCenter: _centerPoint,
+                // Set your initial position
+                initialZoom: 14.0,
+                initialRotation: 0.0,
+                interactionOptions: InteractionOptions(rotationThreshold: 0, rotationWinGestures: InteractiveFlag.none),
+                onPositionChanged: (position, hasGesture) {
+                  // Update the center point when the map is moved
+                  setState(() {
+                    _centerPoint = position.center; // Update the center point
+                  });
+                },
+              ),
+              children: [
+                TileLayer(urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
+                if (_currentLocation != null) // Show current location marker if available
+                  MarkerLayer(
+                    markers: [
+                      Marker(point: _currentLocation!, child: Icon(Icons.location_on, color: Colors.red, size: 40)),
+                    ],
+                  ),
+                CircleLayer(
+                  circles: [
+                    CircleMarker(
+                      point: _centerPoint,
+                      useRadiusInMeter: true,
+                      color: Colors.blue.withAlpha(77),
+                      borderStrokeWidth: 2,
+                      borderColor: Colors.blue,
+                      radius: _radius * 1000, // Convert km to meters
+                    ),
+                  ],
                 ),
               ],
             ),
-          CircleLayer(
-            circles: [
-              CircleMarker(
-                point: _centerPoint,
-                useRadiusInMeter: true,
-                color: Colors.blue.withAlpha(77),
-                borderStrokeWidth: 2,
-                borderColor: Colors.blue,
-                radius: _radius * 1000, // Convert km to meters
-              ),
-            ],
           ),
+          Slider(
+            value: _radius,
+            min: 0.2,
+            max: 2.0,
+            divisions: 18,
+            label: "${_radius.toStringAsFixed(1)} km",
+            onChanged: (value) {
+              setState(() {
+                _radius = value; // Update the radius
+              });
+            },
+          ),
+          Padding(padding: const EdgeInsets.all(16.0), child: Text("Radius: ${_radius.toStringAsFixed(1)} km")),
         ],
-      ),
-    ),
-            Slider(
-              value: _radius,
-              min: 0.2,
-              max: 2.0,
-              divisions: 18,
-              label: "${_radius.toStringAsFixed(1)} km",
-              onChanged: (value) {
-                setState(() {
-                  _radius = value; // Update the radius
-                });
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text("Radius: ${_radius.toStringAsFixed(1)} km"),
-            ),
-          ],
       ),
     );
   }

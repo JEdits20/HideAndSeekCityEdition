@@ -13,6 +13,5 @@ abstract class LocationInfo with _$LocationInfo {
     required DateTime creationDate,
   }) = _LocationInfo;
 
-  factory LocationInfo.fromJson(Map<String, Object?> json) =>
-      _$LocationInfoFromJson(json);
+  factory LocationInfo.fromJson(Map<String, Object?> json) => _$LocationInfoFromJson(json);
 }

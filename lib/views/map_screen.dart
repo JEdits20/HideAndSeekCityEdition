@@ -45,13 +45,11 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
             child: FlutterMap(
               options: MapOptions(
-                initialCenter: _centerPoint, // Set your initial position
+                initialCenter: _centerPoint,
+                // Set your initial position
                 initialZoom: 14.0,
                 initialRotation: 0.0,
-                interactionOptions: InteractionOptions(
-                    rotationThreshold: 0,
-                    rotationWinGestures: InteractiveFlag.none
-                ),
+                interactionOptions: InteractionOptions(rotationThreshold: 0, rotationWinGestures: InteractiveFlag.none),
                 onPositionChanged: (position, hasGesture) {
                   // Update the center point when the map is moved
                   setState(() {
@@ -59,9 +57,7 @@ class _MapScreenState extends State<MapScreen> {
                   });
                 },
               ),
-              children: [
-                MapLayers(centerPoint: LatLng(52.270088, 10.363668), radius: 0.2)
-              ],
+              children: [MapLayers(centerPoint: LatLng(52.270088, 10.363668), radius: 0.2)],
             ),
           ),
           Slider(
@@ -76,10 +72,7 @@ class _MapScreenState extends State<MapScreen> {
               });
             },
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text("Radius: ${_radius.toStringAsFixed(1)} km"),
-          ),
+          Padding(padding: const EdgeInsets.all(16.0), child: Text("Radius: ${_radius.toStringAsFixed(1)} km")),
         ],
       ),
     );

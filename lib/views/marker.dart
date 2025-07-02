@@ -12,17 +12,8 @@ class MapLayers extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TileLayer(
-          urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        ),
-        MarkerLayer(
-          markers: [
-            Marker(
-              point: centerPoint,
-              child: Icon(Icons.location_on, color: Colors.red, size: 40),
-            ),
-          ],
-        ),
+        TileLayer(urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
+        MarkerLayer(markers: [Marker(point: centerPoint, child: Icon(Icons.location_on, color: Colors.red, size: 40))]),
         CircleLayer(
           circles: [
             CircleMarker(

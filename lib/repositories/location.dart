@@ -13,20 +13,14 @@ class LocationRepository {
 
   Future<Result<HashMap<String, LatLng>>> getLocations(String gameName) async {
     if (_apiClient.crypto == null)
-      return Result.error(
-        Exception(
-          "getLocations() was called before a game('s crypto instance) was initialized",
-        ),
-      );
+      return Result.error(Exception("getLocations() was called before a game('s crypto instance) was initialized"));
     final res = await _apiClient.getLocations(gameName);
     switch (res) {
       case Err<String>():
         return Result.error(res.error);
       case Ok<String>():
     }
-    final HashMap<String, LatLng> locations = _apiClient.crypto!.decryptJSON(
-      res.value,
-    );
+    final HashMap<String, LatLng> locations = _apiClient.crypto!.decryptJSON(res.value);
     return Result.ok(locations);
     // either return cached locations or fetch new ones based on connection state
   }

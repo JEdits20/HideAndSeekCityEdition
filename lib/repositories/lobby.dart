@@ -12,15 +12,8 @@ class LobbyRepository {
 
   Future<Result<List<String>>> getUsernames() async {
     if (_apiClient.crypto == null)
-      return Result.error(
-        Exception(
-          "getUsernames() was called before a game('s crypto instance) was initialized",
-        ),
-      );
-    if (gameName == null)
-      return Result.error(
-        Exception("getUsernames() was called before a game was initialized"),
-      );
+      return Result.error(Exception("getUsernames() was called before a game('s crypto instance) was initialized"));
+    if (gameName == null) return Result.error(Exception("getUsernames() was called before a game was initialized"));
     final res = await _apiClient.getUsernames(gameName!);
     switch (res) {
       case Err<String>():

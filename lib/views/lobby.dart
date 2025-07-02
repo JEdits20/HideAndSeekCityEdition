@@ -11,9 +11,7 @@ class HideAndSeekApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Hide and Seek: City Edition',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: LobbyScreen(),
     );
   }
@@ -46,15 +44,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
           GestureDetector(
             onTap: () {},
             child: FlutterMap(
-              options: MapOptions(
-                initialCenter: LatLng(52.270088, 10.363668),
-                initialZoom: 13.0,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                ),
-              ],
+              options: MapOptions(initialCenter: LatLng(52.270088, 10.363668), initialZoom: 13.0),
+              children: [TileLayer(urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png")],
             ),
           ),
           Padding(
@@ -74,15 +65,9 @@ class _LobbyScreenState extends State<LobbyScreen> {
                           TextField(
                             controller: _usernameController,
                             decoration: InputDecoration(
-                              border: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.white),
-                              ),
+                              border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+                              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
                               suffixIcon: Icon(
                                 Icons.edit,
                                 color: Colors.white, // Pen icon color
@@ -93,13 +78,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                             style: TextStyle(
                               color: Colors.white, // Text color
                               fontSize: 36, // Increased size (1.5 times)
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 8,
-                                ),
-                              ],
+                              shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 8)],
                             ),
                           ),
                         ],
@@ -118,13 +97,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       style: TextStyle(
                         color: Colors.white, // High contrast text color
                         fontSize: 36, // Increased size (1.5 times)
-                        shadows: [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 8,
-                          ),
-                        ],
+                        shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 8)],
                       ),
                     ),
                   ),
@@ -138,13 +111,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       style: TextStyle(
                         color: Colors.white, // High contrast text color
                         fontSize: 36,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                            blurRadius: 8,
-                          ),
-                        ],
+                        shadows: [Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 8)],
                       ),
                     ),
                   ),

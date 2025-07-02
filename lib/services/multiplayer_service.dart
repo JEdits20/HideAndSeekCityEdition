@@ -18,10 +18,7 @@ class ApiService {
     channel = WebSocketChannel.connect(Uri.parse(wsUrl));
   }
 
-  Future<Result<void>> newLobby(
-    String gameName,
-    String encryptedValidationData,
-  ) async {
+  Future<Result<void>> newLobby(String gameName, String encryptedValidationData) async {
     // TODO: http endpoint to create new lobby
     return Result.ok(());
   }
@@ -42,10 +39,7 @@ class ApiService {
     sendData({'name': name}, "create");
   }
 
-  Future<Map<String, dynamic>> sendData(
-    Map<String, dynamic> data,
-    String endpoint,
-  ) async {
+  Future<Map<String, dynamic>> sendData(Map<String, dynamic> data, String endpoint) async {
     int maxRetries = 3;
     http.Response? response;
 
