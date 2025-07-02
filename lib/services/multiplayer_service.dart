@@ -1,71 +1,76 @@
 import 'dart:convert';
+import 'dart:ffi';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:http/http.dart' as http;
 
 class ApiService {
+  bool gameOngoing = false;
   final String baseUrl;
+  late Int code;
+  late Int uuid;
+  String gameKey = 'hllhmnuklahmuklagvrhmuklsrgvloac';
 
   ApiService(this.baseUrl);
 
-  // Start the game
-  Future<Map<String, dynamic>> startGame(String timestamp, int x, int y) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/start'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'timestamp': timestamp,
-        'x': x,
-        'y': y,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to start game: ${response.body}');
-    }
+  Future<void> setName(String name) async {
+    sendData({
+      'name': name
+    }, "create");
   }
 
-  // Send location update
-  Future<Map<String, dynamic>> sendLocationUpdate(double lat, double lng) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/update'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'lat': lat,
-        'lng': lng,
-      }),
-    );
+  Future<Map<String, dynamic>> sendData(Map<String, dynamic> data, String endpoint) async {
+    int maxRetries = 3;
+    http.Response? response;
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to send location update: ${response.body}');
+    for (int attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        response = await http.post(
+          Uri.parse('$baseUrl/$endpoint'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(data),
+        );
+        if (response.statusCode == 200) {
+          print('Data sent successfully: ${response.body}');
+          return jsonDecode(response.body);
+        } else {
+          print('Failed to send data: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error occurred while sending data: $e');
+      }finally{
+        if (attempt < maxRetries - 1) {
+          await Future.delayed(Duration(seconds: 2));
+        }
+      }
     }
+    if(response == null) return {'status': "error trying to reach the server"};
+    if(response.body.isEmpty) return {'status': response.statusCode};
+    return jsonDecode(response.body);
   }
 
-  // Fetch updates
-  Future<Map<String, dynamic>> fetchUpdate() async {
-    final response = await http.get(Uri.parse('$baseUrl/update'));
+  Future<bool> sendDataEncrypted(Map<String, double> data, String endpoint) async {
+    if(!gameOngoing) return false;
+    final encryptedValues = _encryptValues(data.values.toList(growable: false));
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to fetch update: ${response.body}');
-    }
+    final payload = {
+      'values': encryptedValues,
+      'code': code,
+      'uuid': uuid,
+    };
+
+    sendData(payload, endpoint);
+    return true
   }
 
-  // Get game start time
-  Future<Map<String, dynamic>> getStartTime() async {
-    final response = await http.get(Uri.parse('$baseUrl/timestart'));
+  List<String> _encryptValues(List<double> values) {
+    final key = encrypt.Key.fromUtf8(gameKey.padRight(32, '0').substring(0, 32));
+    final iv = encrypt.IV.fromLength(16);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to get start time: ${response.body}');
-    }
+    List<String> encryptedValues = values.map((value) {
+      return encrypter.encrypt(value.toString(), iv: iv).base64;
+    }).toList();
+
+    return encryptedValues;
   }
 }
