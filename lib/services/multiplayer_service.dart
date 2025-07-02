@@ -23,20 +23,27 @@ class ApiService {
     return Result.ok(());
   }
 
+  Future<Result<void>> joinLobby(String gameName, String encryptedAndConcatenatedUsername) async {
+    // TODO: http endpoint to create new lobby
+    return Result.ok(());
+  }
+
+  /// Returns the lobby(game) name and the corresponding encryptedTestData
+  Future<Result<Map<String, String>>> getLobbies() async {
+    // TODO: http endpoint to get existing (not currently running) games
+    return Result.ok({"game": "diesistinvalide"});
+  }
+
   /// Returns encrypted json map of locations.
   Future<Result<String>> getLocations(String gameName) async {
     // TODO: http endpoint to get locations
     return Result.ok("TODO");
   }
 
-  /// Returns encrypted json list of usernames.
-  Future<Result<String>> getUsernames(String gameName) async {
+  /// Returns json list of encrypted usernames(each concatenated with the lobbyName).
+  Future<Result<List<String>>> getUsernames(String gameName) async {
     // TODO: http endpoint to get usernames
-    return Result.ok("TODO");
-  }
-
-  Future<void> setName(String name) async {
-    sendData({'name': name}, "create");
+    return Result.ok(["TODO"]);
   }
 
   Future<Map<String, dynamic>> sendData(Map<String, dynamic> data, String endpoint) async {
@@ -45,11 +52,7 @@ class ApiService {
 
     for (int attempt = 0; attempt < maxRetries; attempt++) {
       try {
-        response = await http.post(
-          Uri.parse('$baseUrl/$endpoint'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(data),
-        );
+        response = await http.post(Uri.parse('$baseUrl/$endpoint'), headers: {'Content-Type': 'application/json'}, body: jsonEncode(data));
         if (response.statusCode == 200) {
           print('Data sent successfully: ${response.body}');
           return jsonDecode(response.body);

@@ -31,6 +31,7 @@ class _MapScreenState extends State<MapScreen> {
 
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     setState(() {
+      // TODO: just use LocationInfo?
       _currentLocation = LatLng(position.latitude, position.longitude);
     });
   }
@@ -59,11 +60,7 @@ class _MapScreenState extends State<MapScreen> {
               children: [
                 TileLayer(urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
                 if (_currentLocation != null) // Show current location marker if available
-                  MarkerLayer(
-                    markers: [
-                      Marker(point: _currentLocation!, child: Icon(Icons.location_on, color: Colors.red, size: 40)),
-                    ],
-                  ),
+                  MarkerLayer(markers: [Marker(point: _currentLocation!, child: Icon(Icons.location_on, color: Colors.red, size: 40))]),
                 CircleLayer(
                   circles: [
                     CircleMarker(
