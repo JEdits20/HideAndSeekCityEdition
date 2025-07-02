@@ -9,7 +9,6 @@ import '../result.dart';
 class ApiService {
   final String baseUrl;
   GameCrypto? crypto;
-  String gameKey = 'hllhmnuklahmuklagvrhmuklsrgvloac';
 
   late final WebSocketChannel channel;
 
@@ -24,6 +23,19 @@ class ApiService {
     String encryptedValidationData,
   ) async {
     // TODO: http endpoint to create new lobby
+    return Result.ok(());
+  }
+
+  /// Returns encrypted json map of locations.
+  Future<Result<String>> getLocations(String gameName) async {
+    // TODO: http endpoint to get locations
+    return Result.ok("TODO");
+  }
+
+  /// Returns encrypted json list of usernames.
+  Future<Result<String>> getUsernames(String gameName) async {
+    // TODO: http endpoint to get usernames
+    return Result.ok("TODO");
   }
 
   Future<void> setName(String name) async {

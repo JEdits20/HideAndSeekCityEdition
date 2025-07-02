@@ -3,32 +3,38 @@
 /// Return a [Result] from a function to indicate success or failure.
 ///
 /// A [Result] is either an [Ok] with a value of type [T]
-/// or an [Error] with an [Exception].
+/// or an [Err] with an [Exception].
 ///
 /// Use [Result.ok] to create a successful result with a value of type [T].
 /// Use [Result.error] to create an error result with an [Exception].
 sealed class Result<T> {
   const Result();
 
-  /// Creates an instance of Result containing a value
-  factory Result.ok(T value) => Ok(value);
+  /// Creates a successful [Result], completed with the specified [value].
+  factory Result.ok(T value) => Ok._(value);
 
-  /// Create an instance of Result containing an error
-  factory Result.error(Exception error) => Error(error);
+  /// Creates an error [Result], completed with the specified [error].
+  factory Result.error(Exception error) => Err._(error);
 }
 
 /// Subclass of Result for values
 final class Ok<T> extends Result<T> {
-  const Ok(this.value);
+  const Ok._(this.value);
 
   /// Returned value in result
   final T value;
+
+  @override
+  String toString() => 'Result<$T>.ok($value)';
 }
 
 /// Subclass of Result for errors
-final class Error<T> extends Result<T> {
-  const Error(this.error);
+final class Err<T> extends Result<T> {
+  const Err._(this.error);
 
   /// Returned error in result
   final Exception error;
+
+  @override
+  String toString() => 'Result<$T>.error($error)';
 }
